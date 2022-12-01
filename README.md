@@ -1,5 +1,7 @@
 # Trabalho 2 - Spatial Hashing
 
+![Visualização da intersecção entre segmentos](print.png)
+
 ## Compilação
 
 Em ambiente MSYS2:
