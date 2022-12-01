@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <math.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -22,6 +23,7 @@ void sphash_update(struct sphash sphash[static 1], struct segments segments[stat
     assert(sphash->n_column <= DEF_CELLS_COLUMN_MAX);
 
     memset(sphash->cells_per_object, -1, sizeof (sphash->cells_per_object));
+    memset(sphash->cells_usage,       0, sizeof (sphash->cells_usage     ));
 
     float const cell_height = segments->max_y / (float)sphash->n_line;
     float const cell_width  = segments->max_x / (float)sphash->n_column;
@@ -49,19 +51,43 @@ void sphash_update(struct sphash sphash[static 1], struct segments segments[stat
         }
         else // Using line equation to map segment into cells.
         {
-            float const a = 0.0f / 0.0f;
-            float const b = 0.0f / 0.0f;
-        }
+            float const a = (segment->p2_y - segment->p1_y) / (segment->p2_x - segment->p1_x);
+            float const b = (segment->p2_x * segment->p1_y - segment->p1_x * segment->p2_y) / (segment->p2_x - segment->p1_x);
+	    // a*x + b = y.
 
-#if 0
-        for (int cell_i = 0; cell_i < DEF_CELLS_PER_SEGMENT_ESTIMATE; cell_i++)
-        {
-            if (-1 == cells_per_object[segment_i])
+	    float const min_x = MIN(segment->p1_x, segment->p2_x);
+	    float const max_x = MAX(segment->p1_x, segment->p2_x);
+
+            int const column_from = min_x / cell_width;
+            int const column_to   = max_x / cell_width;
+
+            int accum = 0;
+
+            for (int column_i = column_from; column_i <= column_to; column_i++)
             {
-                break;
+                float const x_one   = column_from == column_i ? min_x : column_i * cell_width;
+                float const x_other = column_to   == column_i ? max_x : nextafterf((column_i + 1) * cell_width, -HUGE_VAL);
+
+                float const y_one   = (a * x_one   + b);
+                float const y_other = (a * x_other + b);
+
+                float const min_y = MIN(y_one, y_other);
+                float const max_y = MAX(y_one, y_other);
+
+                int const row_from = min_y / cell_height;
+                int const row_to   = max_y / cell_height;
+
+                for (int row_i = row_from; row_i <= row_to; row_i++)
+                {
+                    assert(accum < DEF_CELLS_PER_SEGMENT_ESTIMATE);
+
+                    int cell_i = column_i * sphash->n_line + row_i;
+
+                    sphash->cells_per_object[segment_i][accum++] = cell_i;
+                    sphash->cells_usage[cell_i]++;
+                }
             }
         }
-#endif
     }
     // Map lines to cells and set usage.
 

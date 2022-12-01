@@ -48,9 +48,8 @@ void update()
     if (STATE_INTERSECTED == state)
     {
         intersections_render(&intersections, ui.scale);
+        sphash_render(&sphash, segments.max_y, segments.max_x, ui.scale);
     }
-
-    sphash_render(&sphash, segments.max_y, segments.max_x, ui.scale);
 }
 
 void keyboard(int key)
