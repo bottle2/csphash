@@ -20,6 +20,9 @@ $(TARGET):$(OBJECT)
 clean:
 	rm -f $(TARGET){,.exe} $(OBJECT)
 
+check:
+	cppcheck --enable=all --suppress=missingIncludeSystem --suppress=unusedFunction *.c
+
 gl_canvas2d.c:gl_canvas2d.h
 	touch $@
 
