@@ -9,6 +9,7 @@
 #include "intersect.h"
 #include "rgb.h"
 #include "segment.h"
+#include "sphash.h"
 #include "util.h"
 
 static bool intersects(struct segment segments[static 2], float *x, float *y);
@@ -68,6 +69,49 @@ void intersections_render(struct intersections intersections[static 1], float sc
         cv_point(view_xs[view_i] * scale, view_ys[view_i] * scale);
     }
     glPointSize(1.0f);
+}
+
+int intersections_test2(struct segment segments[static DEF_SEGMENT_MAX], struct sphash sphash[static 1], float max_x, float max_y)
+{
+    assert(sphash != NULL);
+
+    int total = 0;
+
+    float const cell_width  = max_x / sphash->n_column;
+    float const cell_height = max_y / sphash->n_line;
+
+    for (int cell_i = 0; cell_i < sphash->n_line * sphash->n_column; cell_i++)
+    {
+        int *_segments = sphash->table[cell_i];
+        int  n_segment = sphash->cells_usage[cell_i];
+
+        for (int segment_i = 0; segment_i < n_segment; segment_i++)
+        {
+            for (int segment_j = segment_i + 1; segment_j < n_segment; segment_j++)
+            {
+                struct segment *one   = segments + _segments[segment_i];
+                struct segment *other = segments + _segments[segment_j];
+                struct segment both[2] = {*one, *other};
+
+                float x = 0.0f / 0.0f;
+                float y = 0.0f / 0.0f;
+
+                if (intersects(both, &x, &y))
+                {
+                    int const hit_column_i = x / cell_width;
+                    int const hit_row_i    = y / cell_height;
+                    int const hit_cell_i   = hit_column_i * sphash->n_line + hit_row_i;
+
+                    if (hit_cell_i == cell_i)
+                    {
+                        total++;
+                    }
+                }
+            }
+        }
+    }
+
+    return total;
 }
 
 static bool intersects(struct segment segments[static 2], float *x, float *y)

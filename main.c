@@ -74,6 +74,16 @@ void keyboard(int key)
             intersections_test(&intersections, &segments);
             sphash_update     (&sphash       , &segments);
 
+            printf("mean %.2f intersections per segment.\n", (double)intersections.total / segments.amount);
+
+            {
+                int total = intersections_test2(segments.them, &sphash, segments.max_x, segments.max_y);
+
+                printf("n to n has %d intersection vs %d got from sphash.\n", intersections.total, total);
+
+                assert(total == intersections.total);
+            }
+
             state = STATE_INTERSECTED;
 
             // TODO Separate kinds of execution.

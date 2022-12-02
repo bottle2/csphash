@@ -6,6 +6,7 @@
 
 struct sphash
 {
+    int n_cell_per_object[DEF_SEGMENT_MAX];
     int cells_per_object[DEF_SEGMENT_MAX][DEF_CELLS_PER_SEGMENT_ESTIMATE];
     int objects_per_cell[DEF_SEGMENT_MAX *DEF_CELLS_PER_SEGMENT_ESTIMATE];
 

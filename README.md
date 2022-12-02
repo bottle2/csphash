@@ -32,15 +32,15 @@ Instruções dentro da aplicação.
 - [X] Implementar intersecção de segmento com segmento
 - [ ] Implementar detecção de segmentos colineares
 - [X] Buscar intersecção de todos com todos segmentos
-- [ ] Buscar intersecção dos segmentos usando spatial hash
+- [X] Buscar intersecção dos segmentos usando spatial hash
 - [ ] Execução sem congelamento da aplicação
 
 ### Contrato: spatial hash
 
-- [ ] Hash de linha resultando em múltiplas células
-- [ ] Anotar de uso e presença em células
-- [ ] Distribuir da tabela crua como matriz e índices finais
-- [ ] Armazenar dos objetos na tabela
+- [X] Hash de linha resultando em múltiplas células
+- [X] Anotar de uso e presença em células
+- [X] Distribuir da tabela crua como matriz e índices finais
+- [X] Armazenar dos objetos na tabela
 - [ ] Parametrizar tamanho das células
 - [ ] Estimativa exata do tamanho da tabela
 

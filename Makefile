@@ -26,7 +26,7 @@ check:
 gl_canvas2d.c:gl_canvas2d.h
 	touch $@
 
-intersect.c:def.h gl_canvas2d.h intersect.h rgb.h segment.h util.h
+intersect.c:def.h gl_canvas2d.h intersect.h rgb.h segment.h sphash.h util.h
 	touch $@
 
 main.c:def.h input.h intersect.h gl_canvas2d.h fps.h rgb.h segment.h sphash.h state.h ui.h util.h

@@ -3,6 +3,7 @@
 
 #include "def.h"
 #include "segment.h"
+#include "sphash.h"
 
 struct intersections
 {
@@ -16,5 +17,7 @@ struct intersections
 void intersections_test  (struct intersections intersections[static 1],
                           struct segments      segments     [static 1]);
 void intersections_render(struct intersections intersections[static 1], float scale);
+
+int intersections_test2(struct segment segments[static DEF_SEGMENT_MAX], struct sphash sphash[static 1], float max_x, float max_y);
 
 #endif
