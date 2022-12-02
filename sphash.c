@@ -34,20 +34,19 @@ void sphash_update(struct sphash sphash[static 1], struct segments segments[stat
 
         if (segment->p1_x == segment->p2_x)
         {
-            assert(!"Not implemented");
-#if 0
             float const min_y = MIN(segment->p1_y, segment->p2_y);
             float const max_y = MAX(segment->p1_y, segment->p2_y);
 
-            int const cell_x = segment->p1_x / cell_width;
+            int const column_i = segment->p1_x / cell_width;
 
-            //int const cell_y // XXX Finish!
+            int const row_from = min_y / cell_height;
+            int const row_to   = max_y / cell_height;
 
-            for (int cell_y = min_y / cell_height; cell_y < max_y / cell_height; cell_y++)
+            for (int row_i = row_from; row_i <= row_to; row_i++)
             {
-                sphash->cells_per_object[segment_i][cell_i] = cell_y;
+                int const cell_i = column_i * sphash->n_line + row_i;
+                sphash->cells_per_object[segment_i][row_i - row_from] = cell_i;
             }
-#endif
         }
         else // Using line equation to map segment into cells.
         {
