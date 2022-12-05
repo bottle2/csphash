@@ -112,7 +112,7 @@ void cv_text(float x, float y, const char *t)
     for(int c=0; c < tam; c++)
     {
       glRasterPos2i(x + c*10, y);
-      glutBitmapCharacter(GLUT_BITMAP_8_BY_13, t[c]);
+      glutBitmapCharacter(GLUT_BITMAP_9_BY_15, t[c]);
     }
 }
 
@@ -291,7 +291,9 @@ void cv_init(int w, int h, const char *title)
    glutMotionFunc(motion);
    glutMouseWheelFunc(mouseWheelCB);
 
+#if 0
    printf("GL Version: %s\n", glGetString(GL_VERSION));
+#endif
 }
 
 void cv_run()

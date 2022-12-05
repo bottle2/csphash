@@ -11,17 +11,11 @@ struct segment
     float p1_y;
     float p2_x;
     float p2_y;
-    float length;
-    float angle;
 };
 
 struct segments
 {
-    int   amount;
-    float max_x;
-    float max_y;
-    float max_length;
-
+    int amount;
     struct segment them[DEF_SEGMENT_MAX];
 };
 

@@ -20,6 +20,6 @@ struct sphash
 
 void sphash_update(struct sphash sphash[static 1], struct segments segments[static 1]);
 
-void sphash_render(struct sphash sphash[static 1], float max_y, float max_x, float scale);
+void sphash_render(struct sphash sphash[static 1], float scale);
 
 #endif

@@ -36,7 +36,7 @@ void update()
     cv_translate(0.0f, 0.0f);
     ui_render(&ui, fps.fps, state);
 
-    ui_scale(&ui, segments.max_x, segments.max_y);
+    ui_scale(&ui);
 
     cv_translate(ui.offset_x, ui.offset_y + DEF_STATUS_BAR_HEIGHT);
 
@@ -48,7 +48,7 @@ void update()
     if (STATE_INTERSECTED == state)
     {
         intersections_render(&intersections, ui.scale);
-        sphash_render(&sphash, segments.max_y, segments.max_x, ui.scale);
+        sphash_render(&sphash, ui.scale);
     }
 }
 
@@ -60,10 +60,7 @@ void keyboard(int key)
         case 'Q': exit(EXIT_SUCCESS); break;
 
         case 'D':
-            segments.max_x      = ui.canvas_width;
-            segments.max_y      = ui.canvas_height;
-            segments.max_length = DEF_SEGMENT_LENGTH_MAX;
-            segments.amount     = DEF_SEGMENT_AMOUNT;
+            segments.amount = DEF_SEGMENT_AMOUNT;
 
             segments_generate(&segments);
 
@@ -77,7 +74,7 @@ void keyboard(int key)
             printf("mean %.2f intersections per segment.\n", (double)intersections.total / segments.amount);
 
             {
-                int total = intersections_test2(segments.them, &sphash, segments.max_x, segments.max_y);
+                int total = intersections_test2(segments.them, &sphash);
 
                 printf("n to n has %d intersection vs %d got from sphash.\n", intersections.total, total);
 
@@ -129,6 +126,8 @@ int main(void)
     sphash.n_column = 8;
 
     printf("Using at least %zu MBs\n", CONSUMPTION / 1000 / 1000);
+    printf("DEF_SEGMENT_VIEW_MAX = %zu\n", (size_t)DEF_SEGMENT_VIEW_MAX);
+    printf("DEF_INTERSECTION_VIEW_MAX = %zu\n", (size_t)DEF_INTERSECTION_VIEW_MAX);
 
     cv_init(DEF_WINDOW_WIDTH, DEF_WINDOW_HEIGHT, "Intersections and spatial hash!");
     cv_run();

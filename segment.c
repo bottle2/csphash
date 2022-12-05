@@ -48,25 +48,28 @@ static struct segment segment_add(struct segments segments[static 1])
 
     assert(segments != NULL);
 
-    float const max_x      = segments->max_x;
-    float const max_y      = segments->max_y;
-    float const max_length = segments->max_length;
+    float const max_x        = DEF_TEST_AREA_WIDTH;
+    float const max_y        = DEF_TEST_AREA_HEIGHT;
+    float const length_min   = DEF_SEGMENT_LENGTH_MIN;
+    float const length_max   = DEF_SEGMENT_LENGTH_MAX;
+    float const length_range = length_max - length_min;
 
-    assert(max_x >= max_length);
-    assert(max_y >= max_length);
+    assert(max_x >= length_max);
+    assert(max_y >= length_max);
 
-    float const angle    = rand() * M_PI * 2.0f / RAND_MAX; 
-    float const length   = rand() * max_length  / RAND_MAX;
+    float const angle  = rand() * M_PI * 2.0f / RAND_MAX; 
+    float const length = length_min + (rand() / (float)RAND_MAX) * length_range;
+
     float const change_x = length * cosf(angle);
     float const change_y = length * sinf(angle);
 
-    float const actual_max_x = segments->max_x - fabsf(change_x);
-    float const actual_max_y = segments->max_y - fabsf(change_y);
+    float const actual_max_x = max_x - fabsf(change_x);
+    float const actual_max_y = max_y - fabsf(change_y);
     float const offset_x     = -MIN(0.0f, change_x);
     float const offset_y     = -MIN(0.0f, change_y);
 
-    float const p1_x = offset_x + rand() * actual_max_x / RAND_MAX;
-    float const p1_y = offset_y + rand() * actual_max_y / RAND_MAX;
+    float const p1_x = offset_x + (rand() / (float)RAND_MAX) * actual_max_x;
+    float const p1_y = offset_y + (rand() / (float)RAND_MAX) * actual_max_y;
     float const p2_x = p1_x + change_x;
     float const p2_y = p1_y + change_y;
 
@@ -75,17 +78,10 @@ static struct segment segment_add(struct segments segments[static 1])
     assert(p2_x >= 0.0f);
     assert(p2_y >= 0.0f);
 
-    assert(p1_x <= segments->max_x);
-    assert(p1_y <= segments->max_y);
-    assert(p2_x <= segments->max_x);
-    assert(p2_y <= segments->max_y);
+    assert(p1_x <= (float)DEF_TEST_AREA_WIDTH );
+    assert(p1_y <= (float)DEF_TEST_AREA_HEIGHT);
+    assert(p2_x <= (float)DEF_TEST_AREA_WIDTH );
+    assert(p2_y <= (float)DEF_TEST_AREA_HEIGHT);
 
-    return (struct segment) {
-        .p1_x   = p1_x,
-        .p1_y   = p1_y,
-        .p2_x   = p2_x,
-        .p2_y   = p2_y,
-        .length = length,
-        .angle  = angle,
-    };
+    return (struct segment) {p1_x, p1_y, p2_x, p2_y};
 }

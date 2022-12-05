@@ -71,14 +71,14 @@ void intersections_render(struct intersections intersections[static 1], float sc
     glPointSize(1.0f);
 }
 
-int intersections_test2(struct segment segments[static DEF_SEGMENT_MAX], struct sphash sphash[static 1], float max_x, float max_y)
+int intersections_test2(struct segment segments[static DEF_SEGMENT_MAX], struct sphash sphash[static 1])
 {
     assert(sphash != NULL);
 
     int total = 0;
 
-    float const cell_width  = max_x / sphash->n_column;
-    float const cell_height = max_y / sphash->n_line;
+    float const cell_width  = DEF_TEST_AREA_WIDTH  / (float)sphash->n_column;
+    float const cell_height = DEF_TEST_AREA_HEIGHT / (float)sphash->n_line;
 
     for (int cell_i = 0; cell_i < sphash->n_line * sphash->n_column; cell_i++)
     {

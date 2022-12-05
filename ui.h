@@ -14,6 +14,6 @@ struct ui
 };
 
 void ui_render(struct ui ui[static 1], float fps, enum state state);
-void ui_scale (struct ui ui[static 1], int area_width, int area_height);
+void ui_scale (struct ui ui[static 1]);
 
 #endif

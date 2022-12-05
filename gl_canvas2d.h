@@ -1,6 +1,9 @@
 #ifndef __CANVAS_2D__H__
 #define __CANVAS_2D__H__
 
+#define CV_CHAR_WIDTH   9
+#define CV_CHAR_HEIGHT 15
+
 //funcoes para desenho de ponto e linha
 void cv_point(float x, float y);
 

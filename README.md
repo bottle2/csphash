@@ -25,7 +25,6 @@ Instruções dentro da aplicação.
 - [X] Definir área de distribuição
 - [X] Distribuir segmentos com tamanho e ângulo aleatório
 - [ ] Parametrizar quantidade de segmentos em tempo de execução
-- [ ] Trabalhar com segmentos maiores que 50 unidades
 
 ### Contrato: intersecção
 
@@ -66,14 +65,11 @@ Instruções dentro da aplicação.
 
 - [ ] Pausa da execução
 - [ ] Interrupção da execução
-- [ ] Parametrização
-- [ ] Escolha de abordagem
 - [ ] Responsividade
 
 ### Contrato: estatísticas 
 
 - [ ] Histórico de execuções
-- [ ] Tabela de execuções
 
 ## Restrições
 

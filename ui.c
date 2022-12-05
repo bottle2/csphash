@@ -31,23 +31,23 @@ void ui_render(struct ui ui[static 1], float fps, enum state state)
     cv_text(2.0f, 2.0f, buffer);
 }
 
-void ui_scale(struct ui ui[static 1], int area_width, int area_height)
+void ui_scale(struct ui ui[static 1])
 {
     assert(ui != NULL);
 
-    float const area_ratio   = (float)area_width       / area_height;
+    float const area_ratio   = DEF_TEST_AREA_RATIO;
     float const canvas_ratio = (float)ui->canvas_width / ui->canvas_height;
 
     if (area_ratio > canvas_ratio)
     {
-        ui->scale = ui->canvas_width / (float)area_width;
+        ui->scale = ui->canvas_width / (float)DEF_TEST_AREA_WIDTH;
     }
     else
     {
-        ui->scale = ui->canvas_height / (float)area_height;
+        ui->scale = ui->canvas_height / (float)DEF_TEST_AREA_HEIGHT;
     }
     // Choose which dimension to glue with which other.
 
-    ui->offset_x = 0.5f * (ui->canvas_width  - ui->scale * area_width);
-    ui->offset_y = 0.5f * (ui->canvas_height - ui->scale * area_height);
+    ui->offset_x = 0.5f * (ui->canvas_width  - ui->scale * DEF_TEST_AREA_WIDTH);
+    ui->offset_y = 0.5f * (ui->canvas_height - ui->scale * DEF_TEST_AREA_HEIGHT);
 }
