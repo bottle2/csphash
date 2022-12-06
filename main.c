@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "cell.h"
 #include "def.h"
 #include "fps.h"
 #include "gl_canvas2d.h"
@@ -48,7 +49,11 @@ void update()
     if (STATE_INTERSECTED == state)
     {
         intersections_render(&intersections, ui.scale);
-        sphash_render(&sphash, ui.scale);
+
+	sphash.cells.cell_width  = DEF_TEST_AREA_WIDTH  / sphash.cells.n_column;
+        sphash.cells.cell_height = DEF_TEST_AREA_HEIGHT / sphash.cells.n_line;
+
+	cells_render(&sphash.cells, ui.scale);
     }
 }
 

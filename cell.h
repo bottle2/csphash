@@ -15,4 +15,6 @@ struct cells
     float cell_height;
 };
 
+void cells_render(struct cells cells[static 1], float scale);
+
 #endif

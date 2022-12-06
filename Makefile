@@ -23,12 +23,12 @@ clean:
 check:
 	cppcheck --enable=all --suppress=missingIncludeSystem --suppress=unusedFunction *.c
 
-cell.c:cell.h def.h
+cell.c:cell.h def.h gl_canvas2d.h rgb.h
 gl_canvas2d.c:gl_canvas2d.h
 intersect.c:def.h gl_canvas2d.h intersect.h rgb.h segment.h sphash.h util.h
 main.c:def.h input.h intersect.h gl_canvas2d.h fps.h rgb.h segment.h sphash.h state.h ui.h util.h
 segment.c:def.h gl_canvas2d.h segment.h rgb.h util.h
-sphash.c:def.h gl_canvas2d.h sphash.h rgb.h util.h
+sphash.c:cell.h def.h sphash.h util.h
 ui.c:def.h expand.h gl_canvas2d.h rgb.h ui.h
 
 .SUFFIXES:.c.h
