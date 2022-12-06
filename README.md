@@ -24,7 +24,6 @@ Instruções dentro da aplicação.
 
 - [X] Definir área de distribuição
 - [X] Distribuir segmentos com tamanho e ângulo aleatório
-- [ ] Parametrizar quantidade de segmentos em tempo de execução
 
 ### Contrato: intersecção
 
@@ -32,7 +31,6 @@ Instruções dentro da aplicação.
 - [ ] Implementar detecção de segmentos colineares
 - [X] Buscar intersecção de todos com todos segmentos
 - [X] Buscar intersecção dos segmentos usando spatial hash
-- [ ] Execução sem congelamento da aplicação
 
 ### Contrato: spatial hash
 
@@ -40,7 +38,6 @@ Instruções dentro da aplicação.
 - [X] Anotar de uso e presença em células
 - [X] Distribuir da tabela crua como matriz e índices finais
 - [X] Armazenar dos objetos na tabela
-- [ ] Parametrizar tamanho das células
 - [ ] Estimativa exata do tamanho da tabela
 
 ### Contrato: visualização
@@ -61,11 +58,17 @@ Instruções dentro da aplicação.
 - [ ] Desconsiderar tempo de geração de segmentos
 - [ ] Somar opcionalmente tempo do hash espacial
 
-### Contrato: controles e interface
+### Contrato: parametrização
 
+- [ ] Parametrizar quantidade de segmentos em tempo de execução
+- [ ] Parametrizar tamanho das células
+
+### Contrato: controles
+
+- [ ] Execução por passos
+- [ ] Regulagem automática de passos
 - [ ] Pausa da execução
 - [ ] Interrupção da execução
-- [ ] Responsividade
 
 ### Contrato: estatísticas 
 

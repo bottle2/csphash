@@ -24,32 +24,21 @@ static void sphash_render_caption(
 );
 
 static int sphash_hash_vertical(
-    int   x,
-    int   one_y,
-    int   other_y,
-    float cell_height, 
-    float cell_width,
-    int   n_line,
-    int   cells[static DEF_CELLS_PER_SEGMENT_ESTIMATE],
-    int   cells_usage[static DEF_CELLS_MAX]
+    struct segment segment[static 1],
+    struct cells   cells[static 1],
+    int    cells_per_object[static DEF_CELLS_PER_SEGMENT_ESTIMATE]
 );
 
 static int sphash_hash_linear(
     struct segment segment[static 1],
-    float cell_width,
-    float cell_height,
-    int   n_line,
-    int   cells[static DEF_CELLS_PER_SEGMENT_ESTIMATE],
-    int   cells_usage[static DEF_CELLS_MAX]
+    struct cells   cells[static 1],
+    int   cells_per_object[static DEF_CELLS_PER_SEGMENT_ESTIMATE]
 );
 
 static int sphash_hash(
     struct segment segment[static 1],
-    float cell_width,
-    float cell_height,
-    int n_line,
-    int cells_per_object[static DEF_CELLS_PER_SEGMENT_ESTIMATE],
-    int cells_usage[static DEF_CELLS_MAX]
+    struct cells   cells  [static 1],
+    int cells_per_object[static DEF_CELLS_PER_SEGMENT_ESTIMATE]
 );
 
 void sphash_update(struct sphash sphash[static 1], struct segments segments[static 1])
@@ -57,29 +46,26 @@ void sphash_update(struct sphash sphash[static 1], struct segments segments[stat
     assert(sphash   != NULL);
     assert(segments != NULL);
 
-    assert(sphash->n_line >= 1);
-    assert(sphash->n_line <= DEF_CELLS_LINE_MAX);
-    assert(sphash->n_column >= 1);
-    assert(sphash->n_column <= DEF_CELLS_COLUMN_MAX);
+    assert(sphash->cells.n_line >= 1);
+    assert(sphash->cells.n_line <= DEF_CELLS_LINE_MAX);
+    assert(sphash->cells.n_column >= 1);
+    assert(sphash->cells.n_column <= DEF_CELLS_COLUMN_MAX);
 
     memset(sphash->n_cell_per_object, 0, sizeof (sphash->n_cell_per_object));
-    memset(sphash->cells_usage, 0, sizeof (sphash->cells_usage));
+    memset(sphash->cells.usage, 0, sizeof (sphash->cells.usage));
 
-    int const n_column = sphash->n_column;
-    int const n_line   = sphash->n_line;
+    int const n_column = sphash->cells.n_column;
+    int const n_line   = sphash->cells.n_line;
 
-    float const cell_width  = DEF_TEST_AREA_WIDTH  / (float)n_column;
-    float const cell_height = DEF_TEST_AREA_HEIGHT / (float)n_line;
+    sphash->cells.cell_width  = DEF_TEST_AREA_WIDTH  / (float)n_column;
+    sphash->cells.cell_height = DEF_TEST_AREA_HEIGHT / (float)n_line;
 
     for (int segment_i = 0; segment_i < segments->amount; segment_i++)
     {
         sphash->n_cell_per_object[segment_i] = sphash_hash(
             segments->them + segment_i,
-            cell_width,
-            cell_height,
-            n_line,
-            sphash->cells_per_object[segment_i],
-            sphash->cells_usage
+            &sphash->cells,
+            sphash->cells_per_object[segment_i]
         );
     }
     // Map lines to cells and set usage.
@@ -87,8 +73,8 @@ void sphash_update(struct sphash sphash[static 1], struct segments segments[stat
     for (int accum = 0, cell_i = 0; cell_i < n_line * n_column; cell_i++)
     {
         sphash->table[cell_i] = sphash->objects_per_cell + accum;
-        accum += sphash->cells_usage[cell_i];
-        sphash->cells_final[cell_i] = accum;
+        accum += sphash->cells.usage[cell_i];
+        sphash->cells.final[cell_i] = accum;
     }
     // Setup table and final indices.
 
@@ -97,7 +83,7 @@ void sphash_update(struct sphash sphash[static 1], struct segments segments[stat
         for (int cell_i = 0; cell_i < sphash->n_cell_per_object[segment_i]; cell_i++)
         {
             int const cell = sphash->cells_per_object[segment_i][cell_i];
-            sphash->objects_per_cell[--sphash->cells_final[cell]] = segment_i;
+            sphash->objects_per_cell[--sphash->cells.final[cell]] = segment_i;
         }
     }
     // Map lines to table.
@@ -109,13 +95,13 @@ void sphash_render(struct sphash sphash[static 1], float scale)
 
     cv_color(RGB_BLUE);
 
-    int const n_line   = sphash->n_line;
-    int const n_column = sphash->n_column;
+    int const n_line   = sphash->cells.n_line;
+    int const n_column = sphash->cells.n_column;
 
-    float const cell_width  = scale * DEF_TEST_AREA_WIDTH  / sphash->n_column;
-    float const cell_height = scale * DEF_TEST_AREA_HEIGHT / sphash->n_line;
+    float const cell_width  = scale * DEF_TEST_AREA_WIDTH  / sphash->cells.n_column;
+    float const cell_height = scale * DEF_TEST_AREA_HEIGHT / sphash->cells.n_line;
 
-    int const *usage = sphash->cells_usage;
+    int const *usage = sphash->cells.usage;
 
     sphash_render_line  (n_line  , cell_height, DEF_TEST_AREA_WIDTH  * scale);
     sphash_render_column(n_column, cell_width , DEF_TEST_AREA_HEIGHT * scale);
@@ -124,30 +110,19 @@ void sphash_render(struct sphash sphash[static 1], float scale)
 
 static int sphash_hash(
     struct segment segment[static 1],
-    float cell_width,
-    float cell_height,
-    int n_line,
-    int cells[static DEF_CELLS_PER_SEGMENT_ESTIMATE],
-    int cells_usage[static DEF_CELLS_MAX]
+    struct cells   cells  [static 1],
+    int cells_per_object[static DEF_CELLS_PER_SEGMENT_ESTIMATE]
 ) {
     assert(segment != NULL);
+    assert(cells   != NULL);
 
     if (segment->p1_x == segment->p2_x)
     {
-        return sphash_hash_vertical(
-            segment->p1_x,
-            segment->p1_y,
-            segment->p2_y,
-            cell_height,
-            cell_width,
-            n_line,
-            cells,
-            cells_usage
-        );
+        return sphash_hash_vertical(segment, cells, cells_per_object);
     }
     else // Using line equation to map segment into cells.
     {
-        return sphash_hash_linear(segment, cell_width, cell_height, n_line, cells, cells_usage);
+        return sphash_hash_linear(segment, cells, cells_per_object);
     }
 }
 
@@ -202,28 +177,27 @@ static void sphash_render_caption(
 }
 
 static int sphash_hash_vertical(
-    int   x,
-    int   one_y,
-    int   other_y,
-    float cell_height, 
-    float cell_width,
-    int   n_line,
-    int   cells[static DEF_CELLS_PER_SEGMENT_ESTIMATE],
-    int   cells_usage[static DEF_CELLS_MAX]
+    struct segment segment[static 1],
+    struct cells   cells[static 1],
+    int    cells_per_object[static DEF_CELLS_PER_SEGMENT_ESTIMATE]
 ) {
-    float const min_y = MIN(one_y, other_y);
-    float const max_y = MAX(one_y, other_y);
+    assert(segment          != NULL);
+    assert(cells            != NULL);
+    assert(cells_per_object != NULL);
 
-    int const column_i = x / cell_width;
+    float const min_y = MIN(segment->p1_y, segment->p2_y);
+    float const max_y = MAX(segment->p1_y, segment->p2_y);
 
-    int const row_from = min_y / cell_height;
-    int const row_to   = max_y / cell_height;
+    int const column_i = segment->p1_x / cells->cell_width;
+
+    int const row_from = min_y / cells->cell_height;
+    int const row_to   = max_y / cells->cell_height;
 
     for (int row_i = row_from; row_i <= row_to; row_i++)
     {
-        int const cell_i = column_i * n_line + row_i;
-        cells[row_i - row_from] = cell_i;
-        cells_usage[cell_i]++;
+        int const cell_i = column_i * cells->n_line + row_i;
+        cells_per_object[row_i - row_from] = cell_i;
+        cells->usage[cell_i]++;
     }
 
     return row_to - row_from + 1;
@@ -231,28 +205,34 @@ static int sphash_hash_vertical(
 
 static int sphash_hash_linear(
     struct segment segment[static 1],
-    float cell_width,
-    float cell_height,
-    int   n_line,
-    int   cells[static DEF_CELLS_PER_SEGMENT_ESTIMATE],
-    int   cells_usage[static DEF_CELLS_MAX]
+    struct cells   cells[static 1],
+    int   cells_per_object[static DEF_CELLS_PER_SEGMENT_ESTIMATE]
 ) {
-    float const a = (segment->p2_y - segment->p1_y) / (segment->p2_x - segment->p1_x);
-    float const b = (segment->p2_x * segment->p1_y - segment->p1_x * segment->p2_y) / (segment->p2_x - segment->p1_x);
+    assert(segment          != NULL);
+    assert(cells            != NULL);
+    assert(cells_per_object != NULL);
+
+    float const p1_x = segment->p1_x;
+    float const p2_x = segment->p2_x;
+    float const p1_y = segment->p1_y;
+    float const p2_y = segment->p2_y;
+
+    float const a = (p2_y - p1_y) / (p2_x - p1_x);
+    float const b = (p2_x * p1_y - p1_x * p2_y) / (p2_x - p1_x);
     // a*x + b = y.
 
-    float const min_x = MIN(segment->p1_x, segment->p2_x);
-    float const max_x = MAX(segment->p1_x, segment->p2_x);
+    float const min_x = MIN(p1_x, p2_x);
+    float const max_x = MAX(p1_x, p2_x);
 
-    int const column_from = min_x / cell_width;
-    int const column_to   = max_x / cell_width;
+    int const column_from = min_x / cells->cell_width;
+    int const column_to   = max_x / cells->cell_width;
 
     int accum = 0;
 
     for (int column_i = column_from; column_i <= column_to; column_i++)
     {
-        float const x_one   = column_from == column_i ? min_x : column_i * cell_width;
-        float const x_other = column_to   == column_i ? max_x : nextafterf((column_i + 1) * cell_width, -HUGE_VAL);
+        float const x_one   = column_from == column_i ? min_x : column_i * cells->cell_width;
+        float const x_other = column_to   == column_i ? max_x : nextafterf((column_i + 1) * cells->cell_width, -HUGE_VAL);
 
         float const y_one   = (a * x_one   + b);
         float const y_other = (a * x_other + b);
@@ -260,17 +240,17 @@ static int sphash_hash_linear(
         float const min_y = MIN(y_one, y_other);
         float const max_y = MAX(y_one, y_other);
 
-        int const row_from = min_y / cell_height;
-        int const row_to   = max_y / cell_height;
+        int const row_from = min_y / cells->cell_height;
+        int const row_to   = max_y / cells->cell_height;
 
         for (int row_i = row_from; row_i <= row_to; row_i++)
         {
             assert(accum < DEF_CELLS_PER_SEGMENT_ESTIMATE);
 
-            int cell_i = column_i * n_line + row_i;
+            int cell_i = column_i * cells->n_line + row_i;
 
-            cells[accum++] = cell_i;
-            cells_usage[cell_i]++;
+            cells_per_object[accum++] = cell_i;
+            cells->usage[cell_i]++;
         }
     }
 

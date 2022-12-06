@@ -77,13 +77,13 @@ int intersections_test2(struct segment segments[static DEF_SEGMENT_MAX], struct 
 
     int total = 0;
 
-    float const cell_width  = DEF_TEST_AREA_WIDTH  / (float)sphash->n_column;
-    float const cell_height = DEF_TEST_AREA_HEIGHT / (float)sphash->n_line;
+    float const cell_width  = DEF_TEST_AREA_WIDTH  / (float)sphash->cells.n_column;
+    float const cell_height = DEF_TEST_AREA_HEIGHT / (float)sphash->cells.n_line;
 
-    for (int cell_i = 0; cell_i < sphash->n_line * sphash->n_column; cell_i++)
+    for (int cell_i = 0; cell_i < sphash->cells.n_line * sphash->cells.n_column; cell_i++)
     {
         int *_segments = sphash->table[cell_i];
-        int  n_segment = sphash->cells_usage[cell_i];
+        int  n_segment = sphash->cells.usage[cell_i];
 
         for (int segment_i = 0; segment_i < n_segment; segment_i++)
         {
@@ -100,7 +100,7 @@ int intersections_test2(struct segment segments[static DEF_SEGMENT_MAX], struct 
                 {
                     int const hit_column_i = x / cell_width;
                     int const hit_row_i    = y / cell_height;
-                    int const hit_cell_i   = hit_column_i * sphash->n_line + hit_row_i;
+                    int const hit_cell_i   = hit_column_i * sphash->cells.n_line + hit_row_i;
 
                     if (hit_cell_i == cell_i)
                     {

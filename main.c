@@ -122,8 +122,8 @@ int main(void)
     fps_init(&fps);
     srand(time(NULL));
 
-    sphash.n_line   = 6;
-    sphash.n_column = 8;
+    sphash.cells.n_line   = 6;
+    sphash.cells.n_column = 8;
 
     printf("Using at least %zu MBs\n", CONSUMPTION / 1000 / 1000);
     printf("DEF_SEGMENT_VIEW_MAX = %zu\n", (size_t)DEF_SEGMENT_VIEW_MAX);
