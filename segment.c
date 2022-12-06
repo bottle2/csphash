@@ -12,7 +12,7 @@
 #include "rgb.h"
 #include "util.h"
 
-static struct segment segment_add(struct segments segments[static 1]);
+static struct segment segment_add(void);
 
 void segments_generate(struct segments segments[static 1])
 {
@@ -21,7 +21,7 @@ void segments_generate(struct segments segments[static 1])
 
     for (int segment_i = 0; segment_i < (int)segments->amount; segment_i++)
     {
-        segments->them[segment_i] = segment_add(segments);
+        segments->them[segment_i] = segment_add();
     }
 }
 
@@ -42,12 +42,8 @@ void segments_render(struct segments segments[static 1], float scale)
     }
 }
 
-static struct segment segment_add(struct segments segments[static 1])
+static struct segment segment_add(void)
 {
-    // TODO Add and use min_length.
-
-    assert(segments != NULL);
-
     float const max_x        = DEF_TEST_AREA_WIDTH;
     float const max_y        = DEF_TEST_AREA_HEIGHT;
     float const length_min   = DEF_SEGMENT_LENGTH_MIN;

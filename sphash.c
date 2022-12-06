@@ -16,7 +16,7 @@ static int sphash_hash_vertical(
 
 static int sphash_hash_linear(
     struct segment segment[static 1],
-    struct cells   cells[static 1],
+    struct cells   cells  [static 1],
     int   cells_per_object[static DEF_CELLS_PER_SEGMENT_ESTIMATE]
 );
 

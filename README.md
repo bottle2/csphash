@@ -10,14 +10,6 @@ Em ambiente MSYS2:
 
 Não configurado em outros ambientes.
 
-## Design e funcionamento
-
-Pixels é a unidade de medida.
-
-## Controles
-
-Instruções dentro da aplicação.
-
 ## Contratos
 
 ### Contrato: distribuição de segmentos
@@ -72,7 +64,7 @@ Instruções dentro da aplicação.
 
 ### Contrato: estatísticas 
 
-- [ ] Histórico de execuções
+- [ ] Saída consumível por gnuplot
 
 ## Restrições
 
