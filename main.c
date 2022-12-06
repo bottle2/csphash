@@ -34,12 +34,7 @@ void update()
 {
     fps_update(&fps);
 
-    cv_translate(0.0f, 0.0f);
-    ui_render(&ui, fps.fps, state);
-
-    ui_scale(&ui);
-
-    cv_translate(ui.offset_x, ui.offset_y + DEF_STATUS_BAR_HEIGHT);
+    cv_translate(ui.offset_x, ui.offset_y);
 
     if (STATE_DISTRIBUTED == state || STATE_INTERSECTED == state)
     {
@@ -49,12 +44,10 @@ void update()
     if (STATE_INTERSECTED == state)
     {
         intersections_render(&intersections, ui.scale);
-
-	sphash.cells.cell_width  = DEF_TEST_AREA_WIDTH  / sphash.cells.n_column;
-        sphash.cells.cell_height = DEF_TEST_AREA_HEIGHT / sphash.cells.n_line;
-
 	cells_render(&sphash.cells, ui.scale);
     }
+
+    ui_render(&ui, fps.fps, state);
 }
 
 void keyboard(int key)
@@ -106,20 +99,29 @@ void mouse(int button, int _state, int wheel, int direction, int x, int y)
 {
     (void)button;
     (void)_state;
-    (void)wheel;
-    (void)direction;
-    (void)x;
-    (void)y;
 
-    // Do nothing.
+    ui.mouse_x = x;
+    ui.mouse_y = y;
+
+    if (INPUT_SCROLL_YES == wheel)
+    {
+        if (INPUT_UPWARDS == direction)
+        {
+            ui_zoom_in(&ui);
+        }
+        else if (INPUT_DOWNWARDS == direction)
+        {
+            ui_zoom_out(&ui);
+        }
+    }
 }
 
 void resize(int width, int height)
 {
-    ui.canvas_width  = width;
-    ui.canvas_height = height - DEF_STATUS_BAR_HEIGHT;
+    ui.screen_width  = width;
+    ui.screen_height = height;
 
-    // TODO Should reescale here, but canvas area is only set later...
+    ui_scale(&ui);
 }
 
 int main(void)
@@ -127,8 +129,10 @@ int main(void)
     fps_init(&fps);
     srand(time(NULL));
 
-    sphash.cells.n_line   = 6;
-    sphash.cells.n_column = 8;
+    sphash.cells.n_line      = 6;
+    sphash.cells.n_column    = 8;
+    sphash.cells.cell_width  = DEF_TEST_AREA_WIDTH  / sphash.cells.n_column;
+    sphash.cells.cell_height = DEF_TEST_AREA_HEIGHT / sphash.cells.n_line;
 
     printf("Using at least %zu MBs\n", CONSUMPTION / 1000 / 1000);
     printf("DEF_SEGMENT_VIEW_MAX = %zu\n", (size_t)DEF_SEGMENT_VIEW_MAX);

@@ -19,7 +19,7 @@ _Static_assert(DEF_SEGMENT_LENGTH_MAX >= DEF_SEGMENT_LENGTH_MIN, "Stupid!");
 _Static_assert(DEF_SEGMENT_MAX >= 2, "Two or more segments needed");
 
 #define DEF_STATUS_BAR_LENGHT 1000
-#define DEF_STATUS_BAR_HEIGHT   10
+#define DEF_STATUS_BAR_HEIGHT   15
 
 #define DEF_WINDOW_WIDTH  800
 #define DEF_WINDOW_HEIGHT 600
@@ -30,5 +30,8 @@ _Static_assert(DEF_SEGMENT_MAX >= 2, "Two or more segments needed");
 #define DEF_CELLS_MAX (DEF_CELLS_LINE_MAX * DEF_CELLS_COLUMN_MAX)
 
 #define DEF_MAX_RAM_USAGE_ESTIMATE 6000000000
+
+#define DEF_ZOOM_MAX    35
+#define DEF_ZOOM_FACTOR 0.2f
 
 #endif

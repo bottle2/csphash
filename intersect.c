@@ -29,8 +29,8 @@ void intersections_test(struct intersections intersections[static 1],
     {
         for (int segment_j = segment_i + 1; segment_j < n_segment; segment_j++)
         {
-            float x = 0.0f / 0.0f;
-            float y = 0.0f / 0.0f;
+            float x;
+            float y;
 
             struct segment *one   = segments->them + segment_i;
             struct segment *other = segments->them + segment_j;
@@ -93,8 +93,8 @@ int intersections_test2(struct segment segments[static DEF_SEGMENT_MAX], struct 
                 struct segment *other = segments + _segments[segment_j];
                 struct segment both[2] = {*one, *other};
 
-                float x = 0.0f / 0.0f;
-                float y = 0.0f / 0.0f;
+                float x;
+                float y;
 
                 if (intersects(both, &x, &y))
                 {
