@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <math.h>
 #include <stdio.h>
 
 #include <GL/glut.h>
@@ -10,8 +11,11 @@
 #include "state.h"
 #include "rgb.h"
 #include "ui.h"
+#include "util.h"
 
 static char *state_text[] = { STATE_XS(EXPAND_AS_SECOND_FROM_TWO) };
+
+static float ui_zoom(int level);
 
 void ui_render(struct ui ui[static 1], float fps, enum state state)
 {
@@ -26,10 +30,10 @@ void ui_render(struct ui ui[static 1], float fps, enum state state)
 
     char buffer[DEF_STATUS_BAR_LENGHT] = {0};
 
-    int zoom = 100.0f + ui->zoom * DEF_ZOOM_FACTOR * 100.0f;
+    float zoom = ui_zoom(ui->zoom);
 
     snprintf(
-        buffer, DEF_STATUS_BAR_LENGHT, "FPS %8.3f %3d%% %4dx%-4d %s",
+        buffer, DEF_STATUS_BAR_LENGHT, "FPS %8.3f %4.1fx %4dx%-4d %s",
         (double)fps, zoom, ui->screen_width, ui->screen_height, state_text[state]
     );
 
@@ -55,18 +59,28 @@ void ui_scale(struct ui ui[static 1])
     }
     // Choose which dimension to glue with which other.
 
-    ui->scale *= 1.0f + ui->zoom * DEF_ZOOM_FACTOR;
+    ui->scale *= ui_zoom(ui->zoom);
 
-    float const viewport_width  = ui->scale * DEF_TEST_AREA_WIDTH;
-    float const viewport_height = ui->scale * DEF_TEST_AREA_HEIGHT;
+    float const clamp_min_x = ui->screen_width  *         DEF_MOUSE_CLAMP_MARGIN;
+    float const clamp_max_x = ui->screen_width  * (1.0f - DEF_MOUSE_CLAMP_MARGIN);
+    float const clamp_min_y = ui->screen_height *         DEF_MOUSE_CLAMP_MARGIN;
+    float const clamp_max_y = ui->screen_height * (1.0f - DEF_MOUSE_CLAMP_MARGIN);
 
-#if 0
-    float const relative_mouse_x = 1.0f - (ui->screen_width  - ui->mouse_x) / ui->screen_width;
-    float const relative_mouse_y = 1.0f - (ui->screen_height - ui->mouse_y) / ui->screen_height;
-#endif
+    float const mouse_clamp_x = CLAMP(clamp_min_x, ui->mouse_x, clamp_max_x) - clamp_min_x;
+    float const mouse_clamp_y = CLAMP(clamp_min_y, ui->mouse_y, clamp_max_y) - clamp_min_y;
 
-    ui->offset_x = 0.5f * (ui->screen_width - viewport_width);
-    ui->offset_y = 0.5f * (usable_height    - viewport_height) + DEF_STATUS_BAR_HEIGHT;
+    float const relative_x = 1.0f - mouse_clamp_x / (clamp_max_x - clamp_min_x);
+    float const relative_y = 1.0f - mouse_clamp_y / (clamp_max_y - clamp_min_y);
+
+    float const view_width  = ui->scale * DEF_TEST_AREA_WIDTH;
+    float const view_height = ui->scale * DEF_TEST_AREA_HEIGHT;
+
+    float const pan_x = (ui->screen_width - view_width);
+    float const pan_y = (usable_height    - view_height);
+
+    ui->offset_x  = pan_x < 0.0f ? LERP(pan_x, 0.0f, relative_x) : pan_x * 0.5f;
+    ui->offset_y  = pan_y < 0.0f ? LERP(pan_y, 0.0f, relative_y) : pan_y * 0.5f;
+    ui->offset_y += DEF_STATUS_BAR_HEIGHT;
 }
 
 void ui_zoom_in(struct ui ui[static 1])
@@ -77,8 +91,6 @@ void ui_zoom_in(struct ui ui[static 1])
     {
         ui->zoom++;
     }
-
-    ui_scale(ui);
 }
 
 void ui_zoom_out(struct ui ui[static 1])
@@ -89,6 +101,9 @@ void ui_zoom_out(struct ui ui[static 1])
     {
         ui->zoom--;
     }
+}
 
-    ui_scale(ui);
+static float ui_zoom(int level)
+{
+    return powf(2.0f, level / (float)DEF_ZOOM_FACTOR);
 }

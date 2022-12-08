@@ -31,7 +31,10 @@ _Static_assert(DEF_SEGMENT_MAX >= 2, "Two or more segments needed");
 
 #define DEF_MAX_RAM_USAGE_ESTIMATE 6000000000
 
-#define DEF_ZOOM_MAX    35
-#define DEF_ZOOM_FACTOR 0.2f
+#define DEF_ZOOM_FACTOR  4
+#define DEF_ZOOM_DOUBLES 6
+#define DEF_ZOOM_MAX     DEF_ZOOM_FACTOR * DEF_ZOOM_DOUBLES
+
+#define DEF_MOUSE_CLAMP_MARGIN 0.05f
 
 #endif

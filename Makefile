@@ -5,7 +5,8 @@ CFLAGS=                    \
 -Wpedantic -Wall -Wextra    \
 -Wvla -Wshadow              \
 -Wstrict-aliasing           \
--fstrict-aliasing
+-fstrict-aliasing           \
+-O2 -fexpensive-optimizations
 
 LDLIBS=-L/mingw64/lib -lfreeglut -lopengl32 -lglu32 -lm
 

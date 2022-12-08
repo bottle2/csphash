@@ -114,6 +114,8 @@ void mouse(int button, int _state, int wheel, int direction, int x, int y)
             ui_zoom_out(&ui);
         }
     }
+
+    ui_scale(&ui);
 }
 
 void resize(int width, int height)
