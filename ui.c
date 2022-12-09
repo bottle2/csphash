@@ -8,16 +8,13 @@
 
 #include "def.h"
 #include "expand.h"
-#include "state.h"
 #include "rgb.h"
 #include "ui.h"
 #include "util.h"
 
-static char *state_text[] = { STATE_XS(EXPAND_AS_SECOND_FROM_TWO) };
-
 static float ui_zoom(int level);
 
-void ui_render(struct ui ui[static 1], float fps, enum state state)
+void ui_render(struct ui ui[static 1], float fps)
 {
     assert(ui != NULL);
 
@@ -33,8 +30,8 @@ void ui_render(struct ui ui[static 1], float fps, enum state state)
     float zoom = ui_zoom(ui->zoom);
 
     snprintf(
-        buffer, DEF_STATUS_BAR_LENGHT, "FPS %8.3f %4.1fx %4dx%-4d %s",
-        (double)fps, zoom, ui->screen_width, ui->screen_height, state_text[state]
+        buffer, DEF_STATUS_BAR_LENGHT, "FPS %8.3f %4.1fx %4dx%-4d P to pause",
+        (double)fps, zoom, ui->screen_width, ui->screen_height
     );
 
     cv_text(2.0f, 2.0f, buffer);

@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -28,7 +29,9 @@ static struct sphash        sphash        = {0};
                
 _Static_assert(CONSUMPTION < DEF_MAX_RAM_USAGE_ESTIMATE, "Use less memory!");
 
-enum state state = STATE_IDLE;
+static enum state state = STATE_IDLE;
+
+static bool is_paused = false;
 
 void update(void)
 {
@@ -36,7 +39,36 @@ void update(void)
 
     cv_translate(ui.offset_x, ui.offset_y);
 
-    if (STATE_DISTRIBUTED == state || STATE_INTERSECTED == state)
+    if (!is_paused)
+    {
+        switch (state)
+        {
+            case STATE_IDLE:
+                segments_generate(&segments, DEF_SEGMENT_AMOUNT);
+                state = STATE_DISTRIBUTED;
+            break;
+
+            case STATE_DISTRIBUTED:
+                sphash_update(&sphash, &segments);
+                state = STATE_HASHED;
+            break;
+
+            case STATE_HASHED:
+                intersections_test(&intersections, &segments, &sphash);
+                state = STATE_INTERSECTED;
+            break;
+
+            case STATE_INTERSECTED:
+                state = STATE_IDLE;
+            break;
+
+            default:
+                assert(!"Untreated state!");
+            break;
+        }
+    }
+
+    if (STATE_DISTRIBUTED == state || STATE_INTERSECTED == state || STATE_HASHED == state)
     {
         segments_render(&segments, ui.scale);
     }
@@ -44,10 +76,14 @@ void update(void)
     if (STATE_INTERSECTED == state)
     {
         intersections_render(&intersections, ui.scale);
+    }
+
+    if (STATE_HASHED == state || STATE_INTERSECTED == state)
+    {
 	cells_render(&sphash.cells, ui.scale);
     }
 
-    ui_render(&ui, fps.fps, state);
+    ui_render(&ui, fps.fps);
 }
 
 void keyboard(int key)
@@ -57,32 +93,7 @@ void keyboard(int key)
         case INPUT_KEY_ESC: // Fall through;
         case 'Q': exit(EXIT_SUCCESS); break;
 
-        case 'D':
-            segments.amount = DEF_SEGMENT_AMOUNT;
-
-            segments_generate(&segments);
-
-            state = STATE_DISTRIBUTED;
-        break;
-
-        case 'E':
-            intersections_test(&intersections, &segments);
-            sphash_update     (&sphash       , &segments);
-
-            printf("mean %.2f intersections per segment.\n", (double)intersections.total / segments.amount);
-
-            {
-                int total = intersections_test2(segments.them, &sphash);
-
-                printf("n to n has %d intersection vs %d got from sphash.\n", intersections.total, total);
-
-                assert(total == intersections.total);
-            }
-
-            state = STATE_INTERSECTED;
-
-            // TODO Separate kinds of execution.
-        break;
+        case 'P': is_paused = !is_paused; break;
 
         default: /* Do nothing. */ break;
     }

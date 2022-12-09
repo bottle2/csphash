@@ -14,46 +14,6 @@
 
 static bool intersects(struct segment segments[static 2], float *x, float *y);
 
-void intersections_test(struct intersections intersections[static 1],
-                        struct segments      segments     [static 1])
-{
-    assert(intersections != NULL);
-    assert(intersections != NULL);
-
-    intersections->total  = 0;
-    intersections->n_view = 0;
-
-    int const n_segment = segments->amount;
-
-    for (int segment_i = 0; segment_i < n_segment; segment_i++)
-    {
-        for (int segment_j = segment_i + 1; segment_j < n_segment; segment_j++)
-        {
-            float x;
-            float y;
-
-            struct segment *one   = segments->them + segment_i;
-            struct segment *other = segments->them + segment_j;
-            struct segment both[2] = {*one, *other};
-
-            if (intersects(both, &x, &y))
-            {
-                intersections->total++;
-
-                if (segment_i < DEF_SEGMENT_VIEW_MAX &&
-                    segment_j < DEF_SEGMENT_VIEW_MAX
-                ) {
-                    assert(intersections->n_view < DEF_INTERSECTION_VIEW_MAX);
-
-                    intersections->view_xs[intersections->n_view] = x;
-                    intersections->view_ys[intersections->n_view] = y;
-                    intersections->n_view++;
-                }
-            }
-        }
-    }
-}
-
 void intersections_render(struct intersections intersections[static 1], float scale)
 {
     assert(intersections != NULL);
@@ -72,14 +32,22 @@ void intersections_render(struct intersections intersections[static 1], float sc
     glPointSize(1.0f);
 }
 
-int intersections_test2(struct segment segments[static DEF_SEGMENT_MAX], struct sphash sphash[static 1])
-{
-    assert(sphash != NULL);
+void intersections_test(
+    struct intersections intersections[static 1],
+    struct segments      segments     [static 1],
+    struct sphash        sphash       [static 1]
+) {
+    assert(intersections != NULL);
+    assert(segments      != NULL);
+    assert(sphash        != NULL);
 
-    int total = 0;
+    intersections->total  = 0;
+    intersections->n_view = 0;
 
     float const cell_width  = DEF_TEST_AREA_WIDTH  / (float)sphash->cells.n_column;
     float const cell_height = DEF_TEST_AREA_HEIGHT / (float)sphash->cells.n_line;
+
+    int const segment_total = MIN(segments->amount, DEF_SEGMENT_VIEW_MAX);
 
     for (int cell_i = 0; cell_i < sphash->cells.n_line * sphash->cells.n_column; cell_i++)
     {
@@ -90,8 +58,8 @@ int intersections_test2(struct segment segments[static DEF_SEGMENT_MAX], struct 
         {
             for (int segment_j = segment_i + 1; segment_j < n_segment; segment_j++)
             {
-                struct segment *one   = segments + _segments[segment_i];
-                struct segment *other = segments + _segments[segment_j];
+                struct segment *one   = segments->them + _segments[segment_i];
+                struct segment *other = segments->them + _segments[segment_j];
                 struct segment both[2] = {*one, *other};
 
                 float x;
@@ -105,14 +73,22 @@ int intersections_test2(struct segment segments[static DEF_SEGMENT_MAX], struct 
 
                     if (hit_cell_i == cell_i)
                     {
-                        total++;
+                        intersections->total++;
+
+                        if (_segments[segment_i] < segment_total &&
+                            _segments[segment_j] < segment_total
+                        ) {
+                            assert(intersections->n_view < DEF_INTERSECTION_VIEW_MAX);
+
+                            intersections->view_xs[intersections->n_view] = x;
+                            intersections->view_ys[intersections->n_view] = y;
+                            intersections->n_view++;
+                        }
                     }
                 }
             }
         }
     }
-
-    return total;
 }
 
 static bool intersects(struct segment segments[static 2], float *x, float *y)

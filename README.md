@@ -58,7 +58,7 @@ Não configurado em outros ambientes.
 
 - [ ] Execução por passos
 - [ ] Regulagem automática de passos
-- [ ] Pausa da execução
+- [X] Pausa da execução
 - [ ] Interrupção da execução
 
 ### Contrato: estatísticas 

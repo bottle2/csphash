@@ -14,10 +14,18 @@ struct intersections
     int total;
 };
 
+void intersections_render(struct intersections intersections[static 1], float scale);
+#if 1
+void intersections_test  (struct intersections intersections[static 1],
+                          struct segments      segments     [static 1],
+                          struct sphash        sphash       [static 1]);
+
+#else
 void intersections_test  (struct intersections intersections[static 1],
                           struct segments      segments     [static 1]);
-void intersections_render(struct intersections intersections[static 1], float scale);
-
 int intersections_test2(struct segment segments[static DEF_SEGMENT_MAX], struct sphash sphash[static 1]);
+#endif
+
+
 
 #endif

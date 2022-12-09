@@ -14,15 +14,19 @@
 
 static struct segment segment_add(void);
 
-void segments_generate(struct segments segments[static 1])
+void segments_generate(struct segments segments[static 1], int amount)
 {
     assert(segments != NULL);
-    assert(segments->amount < DEF_SEGMENT_MAX);
+    assert(amount < DEF_SEGMENT_MAX);
 
-    for (int segment_i = 0; segment_i < (int)segments->amount; segment_i++)
+    segments->amount = 0;
+
+    for (int segment_i = 0; segment_i < amount; segment_i++)
     {
         segments->them[segment_i] = segment_add();
     }
+
+    segments->amount = amount;
 }
 
 void segments_render(struct segments segments[static 1], float scale)

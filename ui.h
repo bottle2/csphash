@@ -1,8 +1,6 @@
 #ifndef __UI_H__
 #define __UI_H__
 
-#include "state.h"
-
 struct ui
 {
     int screen_width;
@@ -20,7 +18,7 @@ struct ui
     // Internal.
 };
 
-void ui_render  (struct ui ui[static 1], float fps, enum state state);
+void ui_render  (struct ui ui[static 1], float fps);
 void ui_scale   (struct ui ui[static 1]);
 void ui_zoom_in (struct ui ui[static 1]);
 void ui_zoom_out(struct ui ui[static 1]);

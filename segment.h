@@ -19,7 +19,7 @@ struct segments
     struct segment them[DEF_SEGMENT_MAX];
 };
 
-void segments_generate(struct segments segments[static 1]);
+void segments_generate(struct segments segments[static 1], int amount);
 void segments_render  (struct segments segments[static 1], float scale);
 
 #endif
