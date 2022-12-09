@@ -21,5 +21,6 @@ struct segments
 
 void segments_generate(struct segments segments[static 1], int amount);
 void segments_render  (struct segments segments[static 1], float scale);
+bool segment_dump     (struct segment  segment [static 1]);
 
 #endif

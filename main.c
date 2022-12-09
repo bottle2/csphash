@@ -147,9 +147,11 @@ int main(void)
     sphash.cells.cell_width  = DEF_TEST_AREA_WIDTH  / sphash.cells.n_column;
     sphash.cells.cell_height = DEF_TEST_AREA_HEIGHT / sphash.cells.n_line;
 
+#if 0
     printf("Using at least %zu MBs\n", CONSUMPTION / 1000 / 1000);
     printf("DEF_SEGMENT_VIEW_MAX = %zu\n", (size_t)DEF_SEGMENT_VIEW_MAX);
     printf("DEF_INTERSECTION_VIEW_MAX = %zu\n", (size_t)DEF_INTERSECTION_VIEW_MAX);
+#endif
 
     cv_init(DEF_WINDOW_WIDTH, DEF_WINDOW_HEIGHT, "Intersections and spatial hash!");
     cv_run();

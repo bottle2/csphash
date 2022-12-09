@@ -3,6 +3,8 @@
 #include <stddef.h>
 #include <string.h>
 
+#include <stdio.h>
+
 #include "def.h"
 #include "segment.h"
 #include "sphash.h"
@@ -68,6 +70,10 @@ void sphash_update(struct sphash sphash[static 1], struct segments segments[stat
         for (int cell_i = 0; cell_i < sphash->n_cell_per_object[segment_i]; cell_i++)
         {
             int const cell = sphash->cells_per_object[segment_i][cell_i];
+
+	    assert(cell >= 0);
+	    assert(cell < n_column * n_line);
+
             sphash->objects_per_cell[--sphash->cells.final[cell]] = segment_i;
         }
     }
@@ -112,6 +118,10 @@ static int sphash_hash_vertical(
     for (int row_i = row_from; row_i <= row_to; row_i++)
     {
         int const cell_i = column_i * cells->n_line + row_i;
+
+        assert(cell_i >= 0);
+        assert(cell_i < cells->n_column * cells->n_line);
+
         cells_per_object[row_i - row_from] = cell_i;
         cells->usage[cell_i]++;
     }
@@ -140,8 +150,8 @@ static int sphash_hash_linear(
     float const min_x = MIN(p1_x, p2_x);
     float const max_x = MAX(p1_x, p2_x);
 
-    int const column_from = min_x / cells->cell_width;
-    int const column_to   = max_x / cells->cell_width;
+    int const column_from = MIN(min_x / cells->cell_width, cells->n_column - 1);
+    int const column_to   = MIN(max_x / cells->cell_width, cells->n_column - 1);
 
     int accum = 0;
 
@@ -156,14 +166,22 @@ static int sphash_hash_linear(
         float const min_y = MIN(y_one, y_other);
         float const max_y = MAX(y_one, y_other);
 
-        int const row_from = min_y / cells->cell_height;
-        int const row_to   = max_y / cells->cell_height;
+        int const row_from = MIN(min_y / cells->cell_height, cells->n_line - 1);
+        int const row_to   = MIN(max_y / cells->cell_height, cells->n_line - 1);
 
         for (int row_i = row_from; row_i <= row_to; row_i++)
         {
             assert(accum < DEF_CELLS_PER_SEGMENT_ESTIMATE);
 
+            assert(column_i >= 0);
+            assert(column_i < cells->n_column || segment_dump(segment));
+            assert(row_i >= 0);
+            assert(row_i < cells->n_line || segment_dump(segment));
+
             int cell_i = column_i * cells->n_line + row_i;
+
+	    assert(cell_i >= 0);
+	    assert(cell_i < cells->n_column * cells->n_line);
 
             cells_per_object[accum++] = cell_i;
             cells->usage[cell_i]++;

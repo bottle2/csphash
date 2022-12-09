@@ -17,9 +17,7 @@ static struct segment segment_add(void);
 void segments_generate(struct segments segments[static 1], int amount)
 {
     assert(segments != NULL);
-    assert(amount < DEF_SEGMENT_MAX);
-
-    segments->amount = 0;
+    assert(amount <= DEF_SEGMENT_MAX);
 
     for (int segment_i = 0; segment_i < amount; segment_i++)
     {
@@ -44,6 +42,18 @@ void segments_render(struct segments segments[static 1], float scale)
         cv_line(it->p1_x * scale, it->p1_y * scale,
                 it->p2_x * scale, it->p2_y * scale);
     }
+}
+
+bool segment_dump(struct segment segment[static 1])
+{
+    printf(
+        "(%.2f,%.2f)-(%.2f,%.2f)\n",
+        segment->p1_x, segment->p1_y, segment->p2_x, segment->p2_y
+    );
+
+    fflush(stdout);
+
+    return false;
 }
 
 static struct segment segment_add(void)
