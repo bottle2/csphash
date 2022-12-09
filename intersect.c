@@ -66,7 +66,8 @@ void intersections_render(struct intersections intersections[static 1], float sc
     glPointSize(2.0f);
     for (int view_i = 0; view_i < n_view; view_i++)
     {
-        cv_point(view_xs[view_i] * scale, view_ys[view_i] * scale);
+	float const radius = CLAMP(1.0f, scale, 7.5f);
+	cv_circle(view_xs[view_i] * scale, view_ys[view_i] * scale, radius, 15);
     }
     glPointSize(1.0f);
 }
