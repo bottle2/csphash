@@ -39,8 +39,7 @@ Não configurado em outros ambientes.
 - [X] Mostrar pontos de intersecção
 - [X] Mostrar resultados parcialmente
 - [ ] Variar visualização parcial conforme parâmetros
-- [ ] Zoom
-- [ ] Variar resultados visualizados conforme zoom
+- [X] Zoom
 - [X] Aceitar redimensionamento da janela durante execução
 
 ### Contrato: desempenho

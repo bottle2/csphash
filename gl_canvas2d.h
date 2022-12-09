@@ -35,6 +35,6 @@ void cv_translate(float x, float y);
 void cv_init(int w, int h, const char *title);
 
 //funcao para executar a Canvas2D
-void cv_run();
+void cv_run(void);
 
 #endif

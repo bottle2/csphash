@@ -30,7 +30,7 @@ _Static_assert(CONSUMPTION < DEF_MAX_RAM_USAGE_ESTIMATE, "Use less memory!");
 
 enum state state = STATE_IDLE;
 
-void update()
+void update(void)
 {
     fps_update(&fps);
 

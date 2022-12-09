@@ -40,7 +40,7 @@ void specialUp(int key, int ignored1, int ignored2);
 void mouse(int bt, int st, int wheel, int direction, int x, int y);
 void mouseWheelCB(int wheel, int direction, int x, int y);
 void resize(int width, int height);
-void update();
+void update(void);
 
 void cv_point(float x, float y)
 {
@@ -240,7 +240,7 @@ void reshape (int w, int h)
 }
 
 //definicao de valores para limpar buffers
-void inicializa()
+void inicializa(void)
 {
    glClearColor(1,1,1,1);
    glPolygonMode(GL_FRONT, GL_FILL);
@@ -296,7 +296,7 @@ void cv_init(int w, int h, const char *title)
 #endif
 }
 
-void cv_run()
+void cv_run(void)
 {
    glutMainLoop();
 }
