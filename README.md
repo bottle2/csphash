@@ -46,13 +46,13 @@ Não configurado em outros ambientes.
 
 - [X] Medir tempo de execução
 - [X] Desconsiderar tempo de renderização
-- [ ] Desconsiderar tempo de geração de segmentos
+- [X] Desconsiderar tempo de geração de segmentos
 - [ ] Somar opcionalmente tempo do hash espacial
 
 ### Contrato: parametrização
 
-- [ ] Parametrizar quantidade de segmentos em tempo de execução
-- [ ] Parametrizar tamanho das células
+- [X] Parametrizar quantidade de segmentos em tempo de execução
+- [X] Parametrizar tamanho das células
 
 ### Contrato: controles
 

@@ -24,9 +24,9 @@ _Static_assert(DEF_SEGMENT_MAX >= 2, "Two or more segments needed");
 #define DEF_WINDOW_WIDTH  800
 #define DEF_WINDOW_HEIGHT 600
 
-#define DEF_CELLS_PER_SEGMENT_ESTIMATE  7
-#define DEF_CELLS_LINE_MAX             30
-#define DEF_CELLS_COLUMN_MAX           40
+#define DEF_CELLS_PER_SEGMENT_ESTIMATE   40
+#define DEF_CELLS_LINE_MAX              128
+#define DEF_CELLS_COLUMN_MAX            128
 #define DEF_CELLS_MAX (DEF_CELLS_LINE_MAX * DEF_CELLS_COLUMN_MAX)
 
 #define DEF_MAX_RAM_USAGE_ESTIMATE 6000000000
