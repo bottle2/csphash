@@ -12,6 +12,11 @@
 #include "rgb.h"
 #include "util.h"
 
+#define SEGMENT_LENGTH_MIN  1
+#define SEGMENT_LENGTH_MAX 50
+
+_Static_assert(SEGMENT_LENGTH_MAX >= SEGMENT_LENGTH_MIN, "Stupid!");
+
 static struct segment segment_add(void);
 
 void segments_generate(struct segments segments[static 1], int amount)
@@ -60,8 +65,8 @@ static struct segment segment_add(void)
 {
     float const max_x        = DEF_TEST_AREA_WIDTH;
     float const max_y        = DEF_TEST_AREA_HEIGHT;
-    float const length_min   = DEF_SEGMENT_LENGTH_MIN;
-    float const length_max   = DEF_SEGMENT_LENGTH_MAX;
+    float const length_min   = SEGMENT_LENGTH_MIN;
+    float const length_max   = SEGMENT_LENGTH_MAX;
     float const length_range = length_max - length_min;
 
     assert(max_x >= length_max);

@@ -24,11 +24,18 @@ static struct segments      segments      = {0};
 static struct ui            ui            = {0};
 static struct sphash        sphash        = {0};
 
-#define CONSUMPTION (sizeof fps      + sizeof intersections + \
-                     sizeof segments + sizeof ui            + \
-                     sizeof sphash                          )
+#define MAIN_CONSUMPTION (sizeof fps      + sizeof intersections + \
+                          sizeof segments + sizeof ui            + \
+                          sizeof sphash                          )
+
+#define MAIN_WINDOW_WIDTH  800
+#define MAIN_WINDOW_HEIGHT 600
+#define MAIN_MAX_RAM_USAGE_ESTIMATE 6000000000
                
-_Static_assert(CONSUMPTION < DEF_MAX_RAM_USAGE_ESTIMATE, "Use less memory!");
+_Static_assert(
+    MAIN_CONSUMPTION < MAIN_MAX_RAM_USAGE_ESTIMATE,
+    "Use less memory!"
+);
 
 static enum state state = STATE_IDLE;
 
@@ -196,6 +203,6 @@ int main(void)
     fps_init(&fps);
     srand(time(NULL));
 
-    cv_init(DEF_WINDOW_WIDTH, DEF_WINDOW_HEIGHT, "Intersections and spatial hash!");
+    cv_init(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT, "Intersections and spatial hash!");
     cv_run();
 }

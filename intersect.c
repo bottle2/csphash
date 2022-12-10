@@ -44,8 +44,8 @@ void intersections_test(
     intersections->total  = 0;
     intersections->n_view = 0;
 
-    float const cell_width  = DEF_TEST_AREA_WIDTH  / (float)sphash->cells.n_column;
-    float const cell_height = DEF_TEST_AREA_HEIGHT / (float)sphash->cells.n_line;
+    float const cell_width  = sphash->cells.cell_width;
+    float const cell_height = sphash->cells.cell_height;
 
     int const segment_total = MIN(segments->amount, DEF_SEGMENT_VIEW_MAX);
 

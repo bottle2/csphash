@@ -42,7 +42,7 @@ Não configurado em outros ambientes.
 - [X] Zoom
 - [X] Aceitar redimensionamento da janela durante execução
 
-### Contrato: desempenho
+### Contrato: eficiência
 
 - [X] Medir tempo de execução
 - [X] Desconsiderar tempo de renderização
@@ -59,7 +59,6 @@ Não configurado em outros ambientes.
 - [ ] Execução por passos
 - [ ] Regulagem automática de passos
 - [X] Pausa da execução
-- [ ] Interrupção da execução
 
 ### Contrato: estatísticas 
 
