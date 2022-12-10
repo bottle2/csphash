@@ -5,8 +5,9 @@ CFLAGS=                    \
 -Wvla -Wshadow              \
 -Wstrict-aliasing           \
 -fstrict-aliasing           \
--g -O0                      \
--fsanitize=undefined
+-g -O0
+
+#-fsanitize=undefined
 
 LDLIBS=-lfreeglut -lopengl32 -lglu32 -lm
 

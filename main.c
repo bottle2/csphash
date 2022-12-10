@@ -16,6 +16,7 @@
 #include "sphash.h"
 #include "state.h"
 #include "ui.h"
+#include "util.h"
 
 static struct fps           fps           = {0};
 static struct intersections intersections = {0};
@@ -41,24 +42,31 @@ void update(void)
 
     if (!is_paused)
     {
+        char    *action = NULL;
+        clock_t  start  = clock();
+
         switch (state)
         {
             case STATE_IDLE:
                 segments_generate(&segments, DEF_SEGMENT_AMOUNT);
+                action = "generate segments";
                 state = STATE_DISTRIBUTED;
             break;
 
             case STATE_DISTRIBUTED:
                 sphash_update(&sphash, &segments);
+                action = "hash segments";
                 state = STATE_HASHED;
             break;
 
             case STATE_HASHED:
                 intersections_test(&intersections, &segments, &sphash);
+                action = "intersect segments";
                 state = STATE_INTERSECTED;
             break;
 
             case STATE_INTERSECTED:
+                action = "do nothing";
                 state = STATE_IDLE;
             break;
 
@@ -66,6 +74,13 @@ void update(void)
                 assert(!"Untreated state!");
             break;
         }
+
+        clock_t end = clock();
+
+        printf(
+            "Elapsed %d ms to %s.\n",
+            (int)MAX(0, (end - start) * 1000 / CLOCKS_PER_SEC), action
+        );
     }
 
     if (STATE_DISTRIBUTED == state || STATE_INTERSECTED == state || STATE_HASHED == state)
@@ -146,12 +161,6 @@ int main(void)
     sphash.cells.n_column    = 8;
     sphash.cells.cell_width  = DEF_TEST_AREA_WIDTH  / sphash.cells.n_column;
     sphash.cells.cell_height = DEF_TEST_AREA_HEIGHT / sphash.cells.n_line;
-
-#if 0
-    printf("Using at least %zu MBs\n", CONSUMPTION / 1000 / 1000);
-    printf("DEF_SEGMENT_VIEW_MAX = %zu\n", (size_t)DEF_SEGMENT_VIEW_MAX);
-    printf("DEF_INTERSECTION_VIEW_MAX = %zu\n", (size_t)DEF_INTERSECTION_VIEW_MAX);
-#endif
 
     cv_init(DEF_WINDOW_WIDTH, DEF_WINDOW_HEIGHT, "Intersections and spatial hash!");
     cv_run();

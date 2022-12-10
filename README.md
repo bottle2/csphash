@@ -44,8 +44,8 @@ Não configurado em outros ambientes.
 
 ### Contrato: desempenho
 
-- [ ] Medir tempo de execução
-- [ ] Desconsiderar tempo de renderização
+- [X] Medir tempo de execução
+- [X] Desconsiderar tempo de renderização
 - [ ] Desconsiderar tempo de geração de segmentos
 - [ ] Somar opcionalmente tempo do hash espacial
 
